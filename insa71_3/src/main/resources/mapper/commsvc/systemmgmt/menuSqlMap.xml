@@ -16,17 +16,34 @@
 
 
 	<select id="selectMenuList" resultMap="menuResult">
-		<![CDATA[ 
-			select  menu_name 
-			 ,super_menu_code 
-			 ,menu_code 
-			 ,level as DEPTH 
-			 ,decode(super_menu_code,null,'Y','N') as IS_COLLAPSE
-			 ,menu_url
-			 ,navbar_name
-			from menu 
-			start with super_menu_code is null connect by prior menu_code = super_menu_code
-			 ]]>
+		WITH RECURSIVE menu_tree (menu_name, super_menu_code, menu_code, DEPTH, IS_COLLAPSE, menu_url, navbar_name, order_path) AS (
+		    -- 최상위 메뉴 (Anchor)
+		    SELECT menu_name, 
+		           super_menu_code, 
+		           menu_code, 
+		           1 AS DEPTH, 
+		           'Y' AS IS_COLLAPSE, 
+		           URL as menu_url, 
+		           NAVBAR_NAME,
+		           CAST(menu_code AS VARCHAR(100)) AS order_path
+		    FROM menu
+		    WHERE super_menu_code IS NULL
+		    UNION ALL
+		    -- 하위 메뉴 (Recursive)
+		    SELECT m.menu_name, 
+		           m.super_menu_code, 
+		           m.menu_code, 
+		           mt.DEPTH + 1, 
+		           'N' AS IS_COLLAPSE, 
+		           m.URL as menu_url, 
+		           m.NAVBAR_NAME,
+		           CAST(CONCAT(mt.order_path, m.menu_code) AS VARCHAR(100)) AS order_path
+		    FROM menu m
+		    INNER JOIN menu_tree mt ON m.super_menu_code = mt.menu_code
+		)
+		SELECT menu_name, super_menu_code, menu_code, DEPTH, IS_COLLAPSE, menu_url, navbar_name 
+		FROM menu_tree
+		ORDER BY order_path ASC
     </select>
     
     

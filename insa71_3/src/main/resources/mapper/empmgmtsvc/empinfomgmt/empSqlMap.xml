@@ -59,22 +59,19 @@
       , E.EMAIL
       , E.LAST_SCHOOL
       , E.IMG_EXTEND
-      , PD.DEPT_NAME
-      , PD.POSITION
+      , D.DEPT_NAME
+      , P.POSITION
       FROM EMP E
-      , (SELECT * FROM POSITION P, DEPT D) PD
-      WHERE e.EMP_NAME = #{empName}
-      AND E.POSITION_CODE = PD.POSITION_CODE(+) 
-      AND E.DEPT_CODE = PD.DEPT_CODE(+)
+      LEFT JOIN DEPT D ON E.DEPT_CODE = D.DEPT_CODE
+      LEFT JOIN POSITION P ON E.POSITION_CODE = P.POSITION_CODE
+      WHERE E.EMP_NAME = #{empName}
       ORDER BY E.EMP_CODE
    </select>
    <!-- AND E.ID = #id# -->
    
    <select id="selectLastEmpCode" resultType="java.lang.String">
-      SELECT EMP_CODE
+      SELECT MAX(EMP_CODE)
       FROM EMP
-      WHERE ROWNUM = 1
-      ORDER BY EMP_CODE DESC
    </select>
    
       
@@ -116,13 +113,11 @@
       , E.EMAIL
       , E.LAST_SCHOOL
       , E.IMG_EXTEND
-      , PD.DEPT_NAME
-      , PD.POSITION
+      , D.DEPT_NAME
+      , P.POSITION
       FROM EMP E
-      , (SELECT * FROM POSITION P, DEPT D) PD
-      WHERE 1=1
-      AND E.POSITION_CODE = PD.POSITION_CODE(+)
-      AND E.DEPT_CODE = PD.DEPT_CODE(+)
+      LEFT JOIN DEPT D ON E.DEPT_CODE = D.DEPT_CODE
+      LEFT JOIN POSITION P ON E.POSITION_CODE = P.POSITION_CODE
       ORDER BY E.EMP_CODE
    </select>
    
@@ -139,14 +134,12 @@
       , E.EMAIL
       , E.LAST_SCHOOL
       , E.IMG_EXTEND
-      , PD.DEPT_NAME
-      , PD.POSITION
+      , D.DEPT_NAME
+      , P.POSITION
       FROM EMP E
-      , (SELECT * FROM POSITION P, DEPT D) PD
-      WHERE 1=1
-      AND E.POSITION_CODE = PD.POSITION_CODE(+)
-      AND E.DEPT_CODE = PD.DEPT_CODE(+)
-      AND PD.DEPT_NAME = #{dept}
+      LEFT JOIN DEPT D ON E.DEPT_CODE = D.DEPT_CODE
+      LEFT JOIN POSITION P ON E.POSITION_CODE = P.POSITION_CODE
+      WHERE D.DEPT_NAME = #{dept}
       ORDER BY E.EMP_CODE
    </select>
    
@@ -163,14 +156,12 @@
       , E.EMAIL
       , E.LAST_SCHOOL
       , E.IMG_EXTEND
-      , PD.DEPT_NAME
-      , PD.POSITION
+      , D.DEPT_NAME
+      , P.POSITION
       FROM EMP E
-      , (SELECT * FROM POSITION P, DEPT D) PD
-      WHERE 1=1
-      AND E.POSITION_CODE = PD.POSITION_CODE(+)
-      AND E.DEPT_CODE = PD.DEPT_CODE(+)
-      AND E.EMP_NAME = #{name}
+      LEFT JOIN DEPT D ON E.DEPT_CODE = D.DEPT_CODE
+      LEFT JOIN POSITION P ON E.POSITION_CODE = P.POSITION_CODE
+      WHERE E.EMP_NAME = #{name}
       ORDER BY E.EMP_CODE
    </select>
    

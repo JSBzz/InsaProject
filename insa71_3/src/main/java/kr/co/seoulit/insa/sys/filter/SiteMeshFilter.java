@@ -15,7 +15,8 @@ public class SiteMeshFilter extends ConfigurableSiteMeshFilter {
 				.addExcludedPath("/comm/codeWindow/view*")
 				.addExcludedPath("/comm/postWindow/view*")
 				.addExcludedPath("/comm/agWindow/view*")
-				.addExcludedPath("/top/view*");
+				.addExcludedPath("/top/view*")
+				.addExcludedPath("/h2-console/**");
  
 		builder.addTagRuleBundles(new DivExtractingTagRuleBundle());
 	}

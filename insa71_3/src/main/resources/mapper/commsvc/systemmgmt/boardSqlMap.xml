@@ -36,19 +36,22 @@
 	
 
 	<select id="selectAllBoardList" resultMap="boardResult">
-		<![CDATA[                
-	   		SELECT board_seq,
-	   		       ref_seq,
-	   		       reply_seq,
-	   		       name,
-	   		       title,
-	   		       content,
-	   		       hit,
-	   		       reg_date
-	   		FROM newBoard START WITH reply_seq=0
-	   		CONNECT BY PRIOR board_seq=reply_seq
-	   		ORDER SIBLINGS BY ref_seq desc 
-   		]]>
+		WITH RECURSIVE board_tree (board_seq, ref_seq, reply_seq, "NAME", "TITLE", "CONTENT", hit, reg_date, depth, sort_order) AS (
+		    -- 최상위 글
+		    SELECT board_seq, ref_seq, reply_seq, "NAME", "TITLE", "CONTENT", hit, reg_date, 0, 
+		           CAST(LPAD(ref_seq, 10, '0') AS VARCHAR(100))
+		    FROM NEWBOARD
+		    WHERE reply_seq = 0
+		    UNION ALL
+		    -- 답글
+		    SELECT b.board_seq, b.ref_seq, b.reply_seq, b."NAME", b."TITLE", b."CONTENT", b.hit, b.reg_date, bt.depth + 1,
+		           CAST(CONCAT(bt.sort_order, LPAD(b.board_seq, 10, '0')) AS VARCHAR(100))
+		    FROM NEWBOARD b
+		    INNER JOIN board_tree bt ON b.reply_seq = bt.board_seq
+		)
+		SELECT board_seq, ref_seq, reply_seq, "NAME", "TITLE", "CONTENT", hit, reg_date
+		FROM board_tree
+		ORDER BY sort_order DESC
     </select>
     
     <select id="selectBoard" parameterType="integer" resultMap="boardResult1" >
@@ -114,17 +117,31 @@
     </delete>
     
     <select id="selectBoardList" resultMap="boardResult" parameterType="map">
-		<![CDATA[                
-			SELECT *
-			FROM 
-			(SELECT ROWNUM AS RN, BOARD_SEQ, REF_SEQ, REPLY_SEQ, LEVEL, NAME, TITLE, CONTENT, HIT, REG_DATE 
-			 FROM  (SELECT * FROM NEWBOARD)
-		     START WITH REPLY_SEQ=0 
-		     CONNECT BY PRIOR BOARD_SEQ=REPLY_SEQ 
-		     ORDER SIBLINGS BY REF_SEQ DESC)A
-			 WHERE A.RN BETWEEN #{start} AND #{end}
-   		]]>
-   		  </select>
+        SELECT * FROM (
+            SELECT 
+                board_seq, ref_seq, reply_seq, "NAME", "TITLE", "CONTENT", hit, reg_date,
+                ROW_NUMBER() OVER (ORDER BY sort_order DESC) AS RN
+            FROM (
+                WITH RECURSIVE board_tree (board_seq, ref_seq, reply_seq, "NAME", "TITLE", "CONTENT", hit, reg_date, depth, sort_order) AS (
+                    -- 최상위 글 (Anchor)
+                    SELECT 
+                        board_seq, ref_seq, reply_seq, "NAME", "TITLE", "CONTENT", hit, reg_date, 0, 
+                        CAST(LPAD(ref_seq, 10, '0') AS VARCHAR(100))
+                    FROM NEWBOARD
+                    WHERE reply_seq = 0
+                    UNION ALL
+                    -- 답글 (Recursive)
+                    SELECT 
+                        b.board_seq, b.ref_seq, b.reply_seq, b."NAME", b."TITLE", b."CONTENT", b.hit, b.reg_date, bt.depth + 1,
+                        CAST(CONCAT(bt.sort_order, LPAD(b.board_seq, 10, '0')) AS VARCHAR(100))
+                    FROM NEWBOARD b
+                    INNER JOIN board_tree bt ON b.reply_seq = bt.board_seq
+                )
+                SELECT * FROM board_tree
+            ) AS tree_data
+        ) AS paged_data
+        WHERE RN BETWEEN #{start} AND #{end}
+    </select>
    		  
    		  
 </mapper>
