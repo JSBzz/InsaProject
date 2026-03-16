@@ -214,17 +214,18 @@ section .section-title {
 		$.ajax({
 			type : "PUT",
 			url : "${pageContext.request.contextPath}/foudinfomgmt/basetime",
-			data : {
-				"sendData" : sendData
-			},
+			contentType : "application/json",
+			data : JSON.stringify({
+				"sendData" : addrowData != null ? addrowData : updatedTimeBean,
+				"applyYear" : "2024" // 예시값, 실제 비즈니스 로직에 맞춰 전달
+			}),
 			dataType : "json",
-			success : function(sendData) {
-				
-				console.log(sendData);
-				if (sendData.errorCode < 0) {
-					alert("저장에 실패했습니다");
+			success : function(data) {
+				console.log(data);
+				if (data.errorCode < 0) {
+					alert("저장에 실패했습니다: " + data.errorMsg);
 				} else {
-					alert("저장되었습니다");
+					alert(data.errorMsg);
 				}
 				location.reload();
 			}

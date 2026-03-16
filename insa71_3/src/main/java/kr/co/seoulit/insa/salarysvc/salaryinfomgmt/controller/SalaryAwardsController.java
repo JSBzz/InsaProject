@@ -5,9 +5,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import kr.co.seoulit.insa.commsvc.systemmgmt.to.ResultTO;
 import kr.co.seoulit.insa.salarysvc.salaryinfomgmt.service.SalaryInfoMgmtService;
 import kr.co.seoulit.insa.salarysvc.salaryinfomgmt.to.SalaryBonusTO;
 
@@ -18,24 +17,20 @@ public class SalaryAwardsController {
 	
 	@Autowired
 	private SalaryInfoMgmtService salaryInfoMgmtService;	
-	ModelMap map = null;
 	
 	@GetMapping("awards")
-	public ModelMap salInfo(HttpServletRequest request, HttpServletResponse response){
-		
-		map = new ModelMap();
-		String empCode = request.getParameter("empCode");
-			
+	public ResultTO salInfo(@RequestParam("empCode") String empCode){
+		ResultTO resultTO = new ResultTO();
 		try {
 			ArrayList<SalaryBonusTO> list = salaryInfoMgmtService.findBonusSalary(empCode);	
-			map.put("List", list);
-			
+			resultTO.setAttribute("List", list);
+			resultTO.setErrorCode("0");
+			resultTO.setErrorMsg("success");
 		} catch (Exception e) {
-			map.put("errorCode", -1);
-			map.put("errorMsg", e.getMessage());
+			resultTO.setErrorCode("-1");
+			resultTO.setErrorMsg(e.getMessage());
 		}
-		
-		return map;
+		return resultTO;
 	}
 	
 }

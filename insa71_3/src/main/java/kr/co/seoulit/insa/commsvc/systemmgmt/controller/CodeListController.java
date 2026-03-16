@@ -1,17 +1,15 @@
 package kr.co.seoulit.insa.commsvc.systemmgmt.controller;
 
 import java.util.ArrayList;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import kr.co.seoulit.insa.commsvc.systemmgmt.service.SystemMgmtService;
 import kr.co.seoulit.insa.commsvc.systemmgmt.to.CodeTO;
 import kr.co.seoulit.insa.commsvc.systemmgmt.to.DetailCodeTO;
+import kr.co.seoulit.insa.commsvc.systemmgmt.to.ResultTO;
 
 
 @RequestMapping("/systemmgmt/*")
@@ -21,69 +19,51 @@ public class CodeListController {
 	@Autowired
 	private SystemMgmtService systemMgmtService;
 
-	ModelMap map = null;
-	
 	@GetMapping("codelist")
-	public ModelMap detailCodelist(HttpServletRequest request, HttpServletResponse response) {
-
-		map = new ModelMap();
-		String code = request.getParameter("code");
-
+	public ResultTO detailCodelist(@RequestParam String code) {
+		ResultTO result = new ResultTO();
 		try {
 			ArrayList<DetailCodeTO> detailCodeList = systemMgmtService.findDetailCodeList(code);
-
-			map.put("detailCodeList", detailCodeList);
-			map.put("errorMsg", "success");
-			map.put("errorCode", 0);
-
-		} catch (Exception dae) {
-			map.clear();
-			map.put("errorCode", -1);
-			map.put("errorMsg", dae.getMessage());
+			result.setAttribute("detailCodeList", detailCodeList);
+			result.setErrorMsg("success");
+			result.setErrorCode("0");
+		} catch (Exception e) {
+			result.setErrorCode("-1");
+			result.setErrorMsg(e.getMessage());
 		}
-		return map;
+		return result;
 	}
 
 	@GetMapping("code/rest")
-	public ModelMap detailCodelistRest(HttpServletRequest request, HttpServletResponse response) {
-
-		map = new ModelMap();
-
-		String code1 = request.getParameter("code1");
-		String code2 = request.getParameter("code2");
-		String code3 = request.getParameter("code3");
-
+	public ResultTO detailCodelistRest(@RequestParam String code1, 
+                                     @RequestParam String code2, 
+                                     @RequestParam String code3) {
+		ResultTO result = new ResultTO();
 		try {
-
 			ArrayList<DetailCodeTO> detailCodeList = systemMgmtService.findDetailCodeListRest(code1, code2, code3);
-			map.put("detailCodeList", detailCodeList);
-			map.put("errorMsg", "success");
-			map.put("errorCode", 0);
-
-		} catch (Exception dae) {
-			map.clear();
-			map.put("errorCode", -1);
-			map.put("errorMsg", dae.getMessage());
+			result.setAttribute("detailCodeList", detailCodeList);
+			result.setErrorMsg("success");
+			result.setErrorCode("0");
+		} catch (Exception e) {
+			result.setErrorCode("-1");
+			result.setErrorMsg(e.getMessage());
 		}
-		return map;
+		return result;
 	}
 
 	
 	@GetMapping("codelist/all")
-	public ModelMap codelist(HttpServletRequest request, HttpServletResponse response) {
-		map = new ModelMap();
+	public ResultTO codelist() {
+		ResultTO result = new ResultTO();
 		try {
 			ArrayList<CodeTO> codeList = systemMgmtService.findCodeList();
-			map.put("codeList", codeList);
-			map.put("errorMsg", "success");
-			map.put("errorCode", 0);
-
-		} catch (DataAccessException dae) {
-			map.clear();
-			map.put("errorCode", -1);
-			map.put("errorMsg", dae.getMessage());
-
+			result.setAttribute("codeList", codeList);
+			result.setErrorMsg("success");
+			result.setErrorCode("0");
+		} catch (Exception e) {
+			result.setErrorCode("-1");
+			result.setErrorMsg(e.getMessage());
 		}
-		return map;
+		return result;
 	}
 }

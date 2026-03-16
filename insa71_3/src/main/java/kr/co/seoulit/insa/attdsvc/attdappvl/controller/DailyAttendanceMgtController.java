@@ -6,14 +6,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import org.springframework.web.bind.annotation.*;
 import kr.co.seoulit.insa.attdsvc.attdappvl.service.AttdAppvlService;
 import kr.co.seoulit.insa.attdsvc.attdappvl.to.DayAttdMgtTO;
+import kr.co.seoulit.insa.commsvc.systemmgmt.to.ResultTO;
 
 @RestController
 @RequestMapping("/attdappvl/*")
@@ -21,50 +17,34 @@ public class DailyAttendanceMgtController {
 	
 	@Autowired
 	private AttdAppvlService attdAppvlService;
-	ModelMap map = null;
 	
 	@GetMapping("day-attnd")
-	public ModelMap findDayAttdMgtList(HttpServletRequest request, HttpServletResponse response){
-		
-		map = new ModelMap();
-		String applyDay = request.getParameter("applyDay");
-		
-		response.setContentType("application/json; charset=UTF-8"); // 서버가 보낼 타입을 json 으로 지정함 
-
+	public ResultTO findDayAttdMgtList(@RequestParam("applyDay") String applyDay){
+		ResultTO resultTO = new ResultTO();
 		try {
 			ArrayList<DayAttdMgtTO> dayAttdMgtList = attdAppvlService.findDayAttdMgtList(applyDay);
-			map.put("dayAttdMgtList", dayAttdMgtList);
-			map.put("errorMsg","success");
-			map.put("errorCode", 0);
-			
+			resultTO.setAttribute("dayAttdMgtList", dayAttdMgtList);
+			resultTO.setErrorCode("0");
+			resultTO.setErrorMsg("success");
 		} catch (Exception dae){
-			map.clear();
-			map.put("errorCode", -1);
-			map.put("errorMsg", dae.getMessage());
+			resultTO.setErrorCode("-1");
+			resultTO.setErrorMsg(dae.getMessage());
 		}
-		return map;
+		return resultTO;
 	}
 
 	@PutMapping("day-attnd")
-	public ModelMap modifyDayAttdList(HttpServletRequest request, HttpServletResponse response){
-		
-		map = new ModelMap();
-		String sendData = request.getParameter("sendData");
-		response.setContentType("application/json; charset=UTF-8");
-
+	public ResultTO modifyDayAttdList(@RequestBody ArrayList<DayAttdMgtTO> dayAttdMgtList){
+		ResultTO resultTO = new ResultTO();
 		try {	
-			Gson gson = new Gson();
-			ArrayList<DayAttdMgtTO> dayAttdMgtList = gson.fromJson(sendData, new TypeToken<ArrayList<DayAttdMgtTO>>(){}.getType());
 			attdAppvlService.modifyDayAttdMgtList(dayAttdMgtList);
-			map.put("errorMsg","success");
-			map.put("errorCode", 0);
-
+			resultTO.setErrorCode("0");
+			resultTO.setErrorMsg("success");
 		} catch (Exception dae){
-			map.clear();
-			map.put("errorCode", -1);
-			map.put("errorMsg", dae.getMessage());
+			resultTO.setErrorCode("-1");
+			resultTO.setErrorMsg(dae.getMessage());
 		}
-		return map;
+		return resultTO;
 	}	
 
 }

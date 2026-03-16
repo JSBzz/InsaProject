@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import kr.co.seoulit.insa.commsvc.systemmgmt.service.SystemMgmtService;
 import kr.co.seoulit.insa.commsvc.systemmgmt.to.MenuTO;
+import kr.co.seoulit.insa.commsvc.systemmgmt.to.ResultTO;
 
 @RequestMapping("/systemmgmt/*")
 @RestController
@@ -18,11 +19,9 @@ public class MenuController {
 	@Autowired
 	private SystemMgmtService systemMgmtService;
 	
-	ModelMap map = null;
-	
 	@GetMapping("/menulist")
-	public ModelMap findMenuList(HttpServletRequest request, HttpServletResponse response) {
-		map = new ModelMap();
+	public ResultTO findMenuList() {
+		ResultTO resultTO = new ResultTO();
 		try {
 
 			ArrayList<MenuTO> menuList = systemMgmtService.findMenuList();
@@ -33,17 +32,16 @@ public class MenuController {
 					navbarList.add(menuBean);
 				}
 			}
-			map.put("menuList", menuList);
-			map.put("navbarList", navbarList);
-			map.put("errorMsg", "success");
-			map.put("errorCode", 0);
+			resultTO.setAttribute("menuList", menuList);
+			resultTO.setAttribute("navbarList", navbarList);
+			resultTO.setErrorMsg("success");
+			resultTO.setErrorCode("0");
 
 		} catch (Exception dae) {
-			map.clear();
-			map.put("errorCode", -1);
-			map.put("errorMsg", dae.getMessage());
+			resultTO.setErrorCode("-1");
+			resultTO.setErrorMsg(dae.getMessage());
 		}
 		
-		return map;
+		return resultTO;
 	}
 }

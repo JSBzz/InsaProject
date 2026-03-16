@@ -13,6 +13,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import kr.co.seoulit.insa.commsvc.foudinfomgmt.service.FoudInfoMgmtService;
 import kr.co.seoulit.insa.commsvc.foudinfomgmt.to.BaseWorkTimeTO;
+import kr.co.seoulit.insa.commsvc.systemmgmt.to.ResultTO;
+
+import org.springframework.web.bind.annotation.RequestBody;
+import java.util.Map;
+import java.util.List;
 
 @RequestMapping("/foudinfomgmt/*")
 @RestController
@@ -20,49 +25,43 @@ public class BaseWorkTimeController {
 
 	@Autowired
 	private FoudInfoMgmtService foudInfoMgmtService;
-	ModelMap map = null;
 
 	@GetMapping("basetime")
-	public ModelMap findTimeList(HttpServletRequest request, HttpServletResponse response) {
-
-		map = new ModelMap();
-
+	public ResultTO findTimeList() {
+		ResultTO result = new ResultTO();
 		try {
 			ArrayList<BaseWorkTimeTO> list = foudInfoMgmtService.findTimeList();
 			BaseWorkTimeTO emptyBean = new BaseWorkTimeTO();
-			map.put("emptyBean", emptyBean);
-			map.put("list", list);
-
+			result.setAttribute("emptyBean", emptyBean);
+			result.setAttribute("list", list);
+			result.setErrorCode("0");
+			result.setErrorMsg("success");
 		} catch (Exception e) {
-			map.clear();
-			map.put("errorCode", -1);
-			map.put("errorMsg", e.getMessage());
+			result.setErrorCode("-1");
+			result.setErrorMsg(e.getMessage());
 		}
-		return map;
+		return result;
 	}
 
 	
 	@PutMapping("basetime")
-	public ModelMap batchTimeProcess(HttpServletRequest request, HttpServletResponse response) {
-
-		map = new ModelMap();
-		String sendData = request.getParameter("sendData");
-		Gson gson = new Gson();
-		ArrayList<BaseWorkTimeTO> timeList = gson.fromJson(sendData, new TypeToken<ArrayList<BaseWorkTimeTO>>() {
-		}.getType()); // 변경
-
+	public ResultTO batchTimeProcess(@RequestBody Map<String, Object> payload) {
+		ResultTO result = new ResultTO();
 		try {
+			Gson gson = new Gson();
+			String sendData = gson.toJson(payload.get("sendData"));
+			String applyYear = (String) payload.get("applyYear");
+			
+			ArrayList<BaseWorkTimeTO> timeList = gson.fromJson(sendData, new TypeToken<ArrayList<BaseWorkTimeTO>>() {}.getType());
 
 			foudInfoMgmtService.batchTimeProcess(timeList);
-			map.put("errorCode", 0);
-			map.put("errorMsg", request.getParameter("applyYear") + "년도 기준근무시간이 등록/삭제가 완료되었습니다.");
-
+			result.setErrorCode("0");
+			result.setErrorMsg(applyYear + "년도 기준근무시간이 등록/삭제가 완료되었습니다.");
 		} catch (Exception e) {
-			map.clear();
-			map.put("errorCode", -1);
-			map.put("errorMsg", e.getMessage());
+			result.setErrorCode("-1");
+			result.setErrorMsg(e.getMessage());
 		}
-		return map;
+		return result;
 	}
 
 	

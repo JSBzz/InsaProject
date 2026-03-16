@@ -5,12 +5,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.bind.annotation.*;
+import kr.co.seoulit.insa.commsvc.systemmgmt.to.ResultTO;
 import kr.co.seoulit.insa.salarysvc.salaryinfomgmt.service.SalaryInfoMgmtService;
 import kr.co.seoulit.insa.salarysvc.salaryinfomgmt.to.FullTimeSalTO;
 import kr.co.seoulit.insa.salarysvc.salaryinfomgmt.to.PayDayTO;
@@ -22,90 +18,66 @@ public class FullTimeSalaryController {
 	
 	@Autowired
 	private SalaryInfoMgmtService salaryInfoMgmtService;
-	ModelMap map = null;
 	
 	@GetMapping("salary")
-	public ModelMap AllMoneyList(HttpServletRequest request, HttpServletResponse response){
-		
-		map = new ModelMap();
-		String applyYearMonth = request.getParameter("apply_year_month");
-		
+	public ResultTO AllMoneyList(@RequestParam("apply_year_month") String applyYearMonth){
+		ResultTO resultTO = new ResultTO();
 		try {
 			ArrayList<FullTimeSalTO> AllMoneyList = salaryInfoMgmtService.findAllMoney(applyYearMonth);
-			map.put("AllMoneyList", AllMoneyList);
-			map.put("errorMsg","success");
-			map.put("errorCode", 0);
-
+			resultTO.setAttribute("AllMoneyList", AllMoneyList);
+			resultTO.setErrorCode("0");
+			resultTO.setErrorMsg("success");
 		} catch (Exception dae){
-			map.clear();
-			map.put("errorCode", -1);
-			map.put("errorMsg", dae.getMessage());
+			resultTO.setErrorCode("-1");
+			resultTO.setErrorMsg(dae.getMessage());
 		}
-		return map;
+		return resultTO;
 	}
 	
 
 	@GetMapping("/salary/empcode")
-	public ModelMap selectSalary(HttpServletRequest request, HttpServletResponse response){
-		
-		map = new ModelMap();
-		String applyYearMonth = request.getParameter("apply_year_month");
-		String empCode = request.getParameter("empCode");
-
+	public ResultTO selectSalary(@RequestParam("apply_year_month") String applyYearMonth,
+								 @RequestParam("empCode") String empCode){
+		ResultTO resultTO = new ResultTO();
 		try {
-			
 			ArrayList<FullTimeSalTO> fullTimeSalaryList = salaryInfoMgmtService.findselectSalary(applyYearMonth,empCode);
-			map.put("FullTimeSalaryList", fullTimeSalaryList);
-			map.put("errorMsg","success");
-			map.put("errorCode", 0);
-
+			resultTO.setAttribute("FullTimeSalaryList", fullTimeSalaryList);
+			resultTO.setErrorCode("0");
+			resultTO.setErrorMsg("success");
 		} catch (Exception dae){
-			map.clear();
-			map.put("errorCode", -1);
-			map.put("errorMsg", dae.getMessage());
+			resultTO.setErrorCode("-1");
+			resultTO.setErrorMsg(dae.getMessage());
 		}	
-		System.out.println("체크임"+map.get("FullTimeSalaryList"));
-		return map;
+		return resultTO;
 	}
 
 	@PutMapping("salary")
-	public ModelMap modifyFullTimeSalary(HttpServletRequest request, HttpServletResponse response){
-		
-		map = new ModelMap();
-		String sendData = request.getParameter("sendData");
-
+	public ResultTO modifyFullTimeSalary(@RequestBody ArrayList<FullTimeSalTO> fullTimeSalary){
+		ResultTO resultTO = new ResultTO();
 		      try {
-
-		         ObjectMapper mapper = new ObjectMapper();
-	
-		         ArrayList<FullTimeSalTO> fullTimeSalary = mapper.readValue(sendData, new TypeReference<ArrayList<FullTimeSalTO>>() {
-		         });
-		         System.out.println("자바체크"+fullTimeSalary);
 		         salaryInfoMgmtService.modifyFullTimeSalary(fullTimeSalary);
-		         map.put("errorMsg", "success");
-		         map.put("errorCode", 0);
-		         
+		         resultTO.setErrorCode("0");
+		         resultTO.setErrorMsg("success");
 		      } catch (Exception e) { 
-		         map.put("errorMsg", e.getMessage());
-		         map.put("errorCode", -1);
+		         resultTO.setErrorCode("-1");
+		         resultTO.setErrorMsg(e.getMessage());
 		      }
-		      return map;
+		      return resultTO;
 		   }
 	
-	public ModelMap paydayList(HttpServletRequest request, HttpServletResponse response) {
-		
-		map = new ModelMap();
-		
+	@GetMapping("payday")
+	public ResultTO paydayList() {
+		ResultTO resultTO = new ResultTO();
 		try {
 			ArrayList<PayDayTO> list = salaryInfoMgmtService.findPayDayList();
-			map.put("list", list);
-
+			resultTO.setAttribute("list", list);
+			resultTO.setErrorCode("0");
+			resultTO.setErrorMsg("success");
 		} catch (Exception e) {
-			map.put("errorCode", -1);
-			map.put("errorMsg", e.getMessage());
+			resultTO.setErrorCode("-1");
+			resultTO.setErrorMsg(e.getMessage());
 		}
-		return map;
+		return resultTO;
 	}
-	
 	
 }

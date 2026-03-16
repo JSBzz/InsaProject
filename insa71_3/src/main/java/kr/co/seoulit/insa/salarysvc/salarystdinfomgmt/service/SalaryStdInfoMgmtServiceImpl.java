@@ -3,7 +3,7 @@ package kr.co.seoulit.insa.salarysvc.salarystdinfomgmt.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import kr.co.seoulit.insa.salarysvc.salarystdinfomgmt.mapper.BaseExtSalMapper;
@@ -14,14 +14,12 @@ import kr.co.seoulit.insa.salarysvc.salarystdinfomgmt.to.BaseSalaryTO;
 import kr.co.seoulit.insa.salarysvc.salarystdinfomgmt.to.SocialInsTO;
 
 @Service
+@RequiredArgsConstructor
 public class SalaryStdInfoMgmtServiceImpl implements SalaryStdInfoMgmtService{
 	
-	@Autowired
-	private BaseSalaryMapper baseSalaryMapper;
-	@Autowired
-	private BaseExtSalMapper baseExtSalMapper;
-	@Autowired
-	private SocialInsMapper SocialInsureMapper;
+	private final BaseSalaryMapper baseSalaryMapper;
+	private final BaseExtSalMapper baseExtSalMapper;
+	private final SocialInsMapper SocialInsureMapper;
 
 	
 	@Override

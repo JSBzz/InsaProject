@@ -3,7 +3,7 @@ package kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import kr.co.seoulit.insa.commsvc.foudinfomgmt.mapper.DeptMapper;
@@ -22,22 +22,16 @@ import kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.LicenseInfoTO;
 import kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.WorkInfoTO;
 
 @Service
+@RequiredArgsConstructor
 public class EmpInfoServiceImpl implements EmpInfoService {
 	
-	@Autowired
-	private DeptMapper deptMapper;
-	@Autowired
-	private EmpMapper empMapper;
-	@Autowired
-	private DetailCodeMapper detailCodeMapper;
-	@Autowired
-	private FamilyInfoMapper familyInfoMapper;
-	@Autowired
-	private WorkInfoMapper workInfoMapper;
-	@Autowired
-	private LicenseInfoMapper licenseInfoMapper;
-	@Autowired
-	private EmpEvalMapper empEvalMapper;
+	private final DeptMapper deptMapper;
+	private final EmpMapper empMapper;
+	private final DetailCodeMapper detailCodeMapper;
+	private final FamilyInfoMapper familyInfoMapper;
+	private final WorkInfoMapper workInfoMapper;
+	private final LicenseInfoMapper licenseInfoMapper;
+	private final EmpEvalMapper empEvalMapper;
 
 
 	@Override

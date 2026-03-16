@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import kr.co.seoulit.insa.commsvc.systemmgmt.service.SystemMgmtService;
+import kr.co.seoulit.insa.commsvc.systemmgmt.to.ResultTO;
 import kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EmpTO;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RequestMapping("/systemmgmt/*")
@@ -18,15 +20,10 @@ public class EmpLoginController {
 	@Autowired
 	private SystemMgmtService systemMgmtService;
 	
-	ModelMap map = null;
-	
 	@GetMapping("/login")
-	public ModelMap empLogin(HttpServletRequest request, HttpServletResponse response) {		
-		map = new ModelMap();		
+	public ResultTO empLogin(@RequestParam String empName, @RequestParam String empCode, HttpServletRequest request, HttpServletResponse response) {		
+		ResultTO result = new ResultTO();		
 		try {
-			String empName = request.getParameter("empName");
-			String empCode = request.getParameter("empCode");
-			
 			EmpTO empto = systemMgmtService.findEmp(empName, empCode,request, response);
 			
 				if(empto!=null) {
@@ -36,14 +33,16 @@ public class EmpLoginController {
 					request.getSession().setAttribute("code", empto.getEmpCode());
 					request.getSession().setAttribute("authority", empto.getAuthority());
 			
-					map.put("me", "enter"); 
+					result.setAttribute("me", "enter"); 
+					result.setErrorCode("0");
+					result.setErrorMsg("success");
 				}
 
 		}catch (Exception e) {
-			map.put("errorCode", -1);
-			map.put("errorMsg", e.getMessage());		
+			result.setErrorCode("-1");
+			result.setErrorMsg(e.getMessage());		
 		}
-		return map; 
+		return result; 
 	}
 	
 }

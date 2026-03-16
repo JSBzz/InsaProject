@@ -8,7 +8,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.co.seoulit.insa.commsvc.systemmgmt.exception.IdNotFoundException;
@@ -29,24 +28,19 @@ import kr.co.seoulit.insa.commsvc.systemmgmt.to.ReportTO;
 import kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.mapper.EmpMapper;
 import kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EmpTO;
 import kr.co.seoulit.insa.sys.util.BoardFile;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class SystemMgmtServiceImpl implements SystemMgmtService {
 
-	@Autowired
-	private EmpMapper empMapper;
-	@Autowired
-	private AuthCodeMapper adminMapper;
-	@Autowired
-	private BoardMapper boardMapper;
-	@Autowired
-	private DetailCodeMapper detailCodeMapper;
-	@Autowired
-	private ReportMapper reportMapper;
-	@Autowired
-	private MenuMapper menuMapper;
-	@Autowired
-	private CodeMapper codeMapper;
+	private final EmpMapper empMapper;
+	private final AuthCodeMapper adminMapper;
+	private final BoardMapper boardMapper;
+	private final DetailCodeMapper detailCodeMapper;
+	private final ReportMapper reportMapper;
+	private final MenuMapper menuMapper;
+	private final CodeMapper codeMapper;
 
 	
 	@Override

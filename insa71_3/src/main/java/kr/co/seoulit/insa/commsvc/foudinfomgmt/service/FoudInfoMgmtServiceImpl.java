@@ -3,7 +3,6 @@ package kr.co.seoulit.insa.commsvc.foudinfomgmt.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.co.seoulit.insa.commsvc.foudinfomgmt.mapper.BaseWorkTimeMapper;
@@ -16,21 +15,18 @@ import kr.co.seoulit.insa.commsvc.foudinfomgmt.to.HolidayTO;
 import kr.co.seoulit.insa.commsvc.foudinfomgmt.to.PositionTO;
 import kr.co.seoulit.insa.commsvc.systemmgmt.mapper.DetailCodeMapper;
 import kr.co.seoulit.insa.commsvc.systemmgmt.to.DetailCodeTO;
+import lombok.RequiredArgsConstructor;
 
 
 @Service
+@RequiredArgsConstructor
 public class FoudInfoMgmtServiceImpl implements FoudInfoMgmtService {
 	
-	@Autowired
-	private HolidayMapper holidayMapper;
-	@Autowired
-	private BaseWorkTimeMapper baseWorkTimeMapper;
-	@Autowired
-	private DeptMapper deptMapper;
-	@Autowired
-	private DetailCodeMapper detailCodeMapper;
-	@Autowired
-	private PositionMapper positionMapper;
+	private final HolidayMapper holidayMapper;
+	private final BaseWorkTimeMapper baseWorkTimeMapper;
+	private final DeptMapper deptMapper;
+	private final DetailCodeMapper detailCodeMapper;
+	private final PositionMapper positionMapper;
 
 
 	@Override

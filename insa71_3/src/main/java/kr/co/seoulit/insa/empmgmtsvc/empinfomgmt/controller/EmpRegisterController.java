@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.service.EmpInfoService;
+import kr.co.seoulit.insa.commsvc.systemmgmt.to.ResultTO;
 import kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EmpTO;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RequestMapping("/empinfomgmt/*")
@@ -20,44 +22,39 @@ public class EmpRegisterController {
 	
 	@Autowired
 	private EmpInfoService empInfoService;
-	ModelMap map = null;
 
 	@PostMapping("/employee")
-	public ModelMap registEmployee(HttpServletRequest request, HttpServletResponse response) {		
-		map = new ModelMap();
-		String sendData = request.getParameter("sendData");
+	public ResultTO registEmployee(@RequestBody EmpTO emp) {		
+		ResultTO result = new ResultTO();
 		try {
-			Gson gson = new Gson();
-			EmpTO emp = gson.fromJson(sendData, new TypeToken<EmpTO>() {}.getType());			
 			empInfoService.registEmployee(emp);			
-			map.put("errorMsg","success");
-			map.put("errorCode", 0);
+			result.setErrorMsg("success");
+			result.setErrorCode("0");
 
 		} catch (Exception e) {
-			map.put("errorMsg", e.getMessage());
-			map.put("errorCode", -1);
+			result.setErrorMsg(e.getMessage());
+			result.setErrorCode("-1");
 
 		}
-		return map;
+		return result;
 	}
 
 	
 	@GetMapping("/employee")
-	public ModelMap findLastEmpCode(HttpServletRequest request, HttpServletResponse response) {
-		map = new ModelMap();		
+	public ResultTO findLastEmpCode() {
+		ResultTO result = new ResultTO();		
 		try {
 			String empCode = empInfoService.findLastEmpCode();
-			map.put("lastEmpCode", empCode);
-			map.put("errorMsg", "success");
-			map.put("errorCode", 0);
+			result.setAttribute("lastEmpCode", empCode);
+			result.setErrorMsg("success");
+			result.setErrorCode("0");
 
 			
 		} catch (Exception dae) {
-			map.clear();
-			map.put("errorCode", -1);
-			map.put("errorMsg", dae.getMessage());
+			result.setErrorCode("-1");
+			result.setErrorMsg(dae.getMessage());
 		}
-		return map;
+		return result;
 	}
 
 }

@@ -2,7 +2,7 @@ package kr.co.seoulit.insa.attdsvc.attdmgmt.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import kr.co.seoulit.insa.attdsvc.attdmgmt.mapper.DailyAttndMapper;
 import kr.co.seoulit.insa.attdsvc.attdmgmt.mapper.ExcusedAttndMapper;
@@ -11,12 +11,11 @@ import kr.co.seoulit.insa.attdsvc.attdmgmt.to.RestAttdTO;
 import kr.co.seoulit.insa.commsvc.systemmgmt.to.ResultTO;
 
 @Service
+@RequiredArgsConstructor
 public class AttdMgmtServiceImpl implements AttdMgmtService {
 	
-	@Autowired
-	private DailyAttndMapper dayAttdMapper;
-	@Autowired
-	private ExcusedAttndMapper restAttdMapper;
+	private final DailyAttndMapper dayAttdMapper;
+	private final ExcusedAttndMapper restAttdMapper;
 
 	@Override
 	public ArrayList<DayAttdTO> findDayAttdList(String empCode, String applyDay) {

@@ -11,19 +11,20 @@ import org.apache.commons.fileupload.RequestContext;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.servlet.ServletRequestContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import kr.co.seoulit.insa.empmgmtsvc.documentmgmt.service.DocumentMgmtService;
 import kr.co.seoulit.insa.sys.util.ProofImgUploadUtil;
+import lombok.RequiredArgsConstructor;
 
 @RequestMapping("/documentmgmt/*")
 @RestController
+@RequiredArgsConstructor
 public class ProofImgController {
 	
-	@Autowired
-	private DocumentMgmtService documentMgmtService;
+	private final DocumentMgmtService documentMgmtService;
 	
 	ModelMap map = null;
 	

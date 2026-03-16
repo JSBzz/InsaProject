@@ -5,12 +5,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import org.springframework.web.bind.annotation.*;
+import kr.co.seoulit.insa.commsvc.systemmgmt.to.ResultTO;
 import kr.co.seoulit.insa.salarysvc.salarystdinfomgmt.service.SalaryStdInfoMgmtService;
 import kr.co.seoulit.insa.salarysvc.salarystdinfomgmt.to.BaseSalaryTO;
 
@@ -21,46 +17,35 @@ public class BaseSalaryController {
 	
 	@Autowired
 	private SalaryStdInfoMgmtService salaryStdInfoMgmtService;	
-	ModelMap map = null;
-
+	
 	@GetMapping("base-salary")
-	public ModelMap findBaseSalaryList(HttpServletRequest request, HttpServletResponse response){
-		
-		map = new ModelMap();
-		
+	public ResultTO findBaseSalaryList(){
+		ResultTO resultTO = new ResultTO();
 		try {
 			ArrayList<BaseSalaryTO> baseSalaryList = salaryStdInfoMgmtService.findBaseSalaryList();
-			map.put("baseSalaryList", baseSalaryList);
-			map.put("errorMsg","success");
-			map.put("errorCode", 0);
-
+			resultTO.setAttribute("baseSalaryList", baseSalaryList);
+			resultTO.setErrorCode("0");
+			resultTO.setErrorMsg("success");
 		} catch (Exception dae){
-			map.clear();
-			map.put("errorCode", -1);
-			map.put("errorMsg", dae.getMessage());
+			resultTO.setErrorCode("-1");
+			resultTO.setErrorMsg(dae.getMessage());
 		}
-		return map;
+		return resultTO;
 	}
 
 	
 	@PutMapping("base-salary")
-	public ModelMap modifyBaseSalaryList(HttpServletRequest request, HttpServletResponse response){		
-		map = new ModelMap();
-		String sendData = request.getParameter("sendData");
-		
+	public ResultTO modifyBaseSalaryList(@RequestBody ArrayList<BaseSalaryTO> baseSalaryList){		
+		ResultTO resultTO = new ResultTO();
 		try { 			
-			Gson gson = new Gson();
-			ArrayList<BaseSalaryTO> baseSalaryList = gson.fromJson(sendData, new TypeToken<ArrayList<BaseSalaryTO>>(){}.getType());
 			salaryStdInfoMgmtService.modifyBaseSalaryList(baseSalaryList);
-			map.put("errorMsg","success");
-			map.put("errorCode", 0);
-			
+			resultTO.setErrorCode("0");
+			resultTO.setErrorMsg("success");
 		} catch (Exception dae){
-			map.clear();
-			map.put("errorCode", -1);
-			map.put("errorMsg", dae.getMessage());
+			resultTO.setErrorCode("-1");
+			resultTO.setErrorMsg(dae.getMessage());
 		}
-		return map;
+		return resultTO;
 	}
 	
 }

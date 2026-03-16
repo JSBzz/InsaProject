@@ -2,7 +2,6 @@ package kr.co.seoulit.insa.attdsvc.attdappvl.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import kr.co.seoulit.insa.attdsvc.attdappvl.to.DayAttdMgtTO;
 import kr.co.seoulit.insa.attdsvc.attdappvl.to.MonthAttdMgtTO;
@@ -12,20 +11,18 @@ import kr.co.seoulit.insa.attdsvc.attdappvl.mapper.MonthlyAttndMgtMapper;
 import kr.co.seoulit.insa.attdsvc.attdappvl.to.AnnualLeaveMgtTO;
 import kr.co.seoulit.insa.attdsvc.attdmgmt.mapper.ExcusedAttndMapper;
 import kr.co.seoulit.insa.attdsvc.attdmgmt.to.RestAttdTO;
+import lombok.RequiredArgsConstructor;
 
 
 
 @Service
+@RequiredArgsConstructor
 public class AttdAppvlServiceImpl implements AttdAppvlService {
 	
-	@Autowired
-	private DailyAttndMgtMapper dayAttdMgtMapper;
-	@Autowired
-	private ExcusedAttndMapper excusedAttndMapper;
-	@Autowired
-	private MonthlyAttndMgtMapper monthAttdMgtMapper;
-	@Autowired
-	private AnnualVacationMgtMapper annualVacationMgtMapper;
+	private final DailyAttndMgtMapper dayAttdMgtMapper;
+	private final ExcusedAttndMapper excusedAttndMapper;
+	private final MonthlyAttndMgtMapper monthAttdMgtMapper;
+	private final AnnualVacationMgtMapper annualVacationMgtMapper;
 
 	
 	@SuppressWarnings("unchecked")

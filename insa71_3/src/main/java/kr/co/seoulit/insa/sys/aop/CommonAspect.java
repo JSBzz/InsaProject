@@ -21,8 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 @Aspect
 @Configuration              
-public class CommonAspect {  //한개로 다 만들기!!! 원장님요구
-//https://github.com/tintoll/StartSpringBoot/blob/master/spring_boot_start.md	
+public class CommonAspect {
 	
 	
 	//exception 잡는놈들

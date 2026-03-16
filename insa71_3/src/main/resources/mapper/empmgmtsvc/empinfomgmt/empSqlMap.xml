@@ -72,6 +72,7 @@
    <select id="selectLastEmpCode" resultType="java.lang.String">
       SELECT MAX(EMP_CODE)
       FROM EMP
+      WHERE EMP_CODE LIKE 'A%'
    </select>
    
       

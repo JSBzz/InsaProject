@@ -3,7 +3,6 @@ package kr.co.seoulit.insa.empmgmtsvc.documentmgmt.controller;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -11,16 +10,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+
 import kr.co.seoulit.insa.empmgmtsvc.documentmgmt.service.DocumentMgmtService;
 import kr.co.seoulit.insa.empmgmtsvc.documentmgmt.to.proofTO;
+import lombok.RequiredArgsConstructor;
 
 
 @RequestMapping("/documentmgmt/*")
 @RestController
+@RequiredArgsConstructor
 public class ProofApprovalController {
 	
-	@Autowired
-	private DocumentMgmtService documentMgmtService;	
+	private final DocumentMgmtService documentMgmtService;	
 	ModelMap map = null;
 	
 	@GetMapping("proof-approval")

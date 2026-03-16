@@ -3,7 +3,7 @@ package kr.co.seoulit.insa.empmgmtsvc.documentmgmt.service;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import kr.co.seoulit.insa.empmgmtsvc.documentmgmt.mapper.CertificateMapper;
@@ -12,12 +12,11 @@ import kr.co.seoulit.insa.empmgmtsvc.documentmgmt.to.CertificateTO;
 import kr.co.seoulit.insa.empmgmtsvc.documentmgmt.to.proofTO;
 
 @Service
+@RequiredArgsConstructor
 public class DocumentMgmtServiceImpl implements DocumentMgmtService {
 	
-	@Autowired
-	private CertificateMapper certificateMapper;
-	@Autowired
-	private ProofCertificateMapper proofCertificateMapper;
+	private final CertificateMapper certificateMapper;
+	private final ProofCertificateMapper proofCertificateMapper;
 
 
 	

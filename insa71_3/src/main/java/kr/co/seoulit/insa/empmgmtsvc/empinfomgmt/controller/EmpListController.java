@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.service.EmpInfoService;
 import kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EmpTO;
-
+import kr.co.seoulit.insa.commsvc.systemmgmt.to.ResultTO;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RequestMapping("/empinfomgmt/*")
 @RestController
@@ -18,27 +19,20 @@ public class EmpListController {
 	
 	@Autowired
 	private EmpInfoService empInfoService;
-	
-	ModelMap map = null;
 
 	@GetMapping("/emplist")
-	public ModelMap emplist(HttpServletRequest request, HttpServletResponse response) {
-		
-		map = new ModelMap();
-		
+	public ResultTO emplist(@RequestParam(value = "value", required = false, defaultValue = "전체부서") String value) {
+		ResultTO resultTO = new ResultTO();
 		try {
-			String value = "전체부서"; 		
-			if (request.getParameter("value") != null) {
-				value = request.getParameter("value");
-			}
 			ArrayList<EmpTO> list = empInfoService.findEmpList(value);
-			map.put("list", list);
-
+			resultTO.setAttribute("list", list);
+			resultTO.setErrorCode("0");
+			resultTO.setErrorMsg("success");
 		} catch (Exception e) {
-			map.put("errorCode", -1);
-			map.put("errorMsg", e.getMessage());			
+			resultTO.setErrorCode("-1");
+			resultTO.setErrorMsg(e.getMessage());			
 		}
-		return map;
+		return resultTO;
 	}	
 	
 }

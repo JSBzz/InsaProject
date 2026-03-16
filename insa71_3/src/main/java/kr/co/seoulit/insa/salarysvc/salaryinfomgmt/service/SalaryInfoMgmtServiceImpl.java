@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import kr.co.seoulit.insa.salarysvc.salaryinfomgmt.mapper.FullTimeSalaryMapper;
@@ -14,16 +13,15 @@ import kr.co.seoulit.insa.salarysvc.salaryinfomgmt.to.FullTimeSalTO;
 import kr.co.seoulit.insa.salarysvc.salaryinfomgmt.to.PayDayTO;
 import kr.co.seoulit.insa.salarysvc.salaryinfomgmt.to.RetirementSalaryTO;
 import kr.co.seoulit.insa.salarysvc.salaryinfomgmt.to.SalaryBonusTO;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class SalaryInfoMgmtServiceImpl implements SalaryInfoMgmtService{
 	
-	@Autowired
-	private FullTimeSalaryMapper fullTimeSalaryMapper;
-	@Autowired
-	private RetirementSalMapper retirementSalMapper;
-	@Autowired
-	private SalaryBonusMapper salaryBonusMapper;
+	private final FullTimeSalaryMapper fullTimeSalaryMapper;
+	private final RetirementSalMapper retirementSalMapper;
+	private final SalaryBonusMapper salaryBonusMapper;
 
 	
 	@SuppressWarnings("unchecked")

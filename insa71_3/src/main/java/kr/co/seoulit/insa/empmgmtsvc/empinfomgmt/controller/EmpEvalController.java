@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.google.gson.Gson;
 import kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.service.EmpInfoService;
 import kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EmpEvalTO;
-
+import kr.co.seoulit.insa.commsvc.systemmgmt.to.ResultTO;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/empinfomgmt/*")
 @RestController
@@ -22,64 +23,51 @@ public class EmpEvalController {
 	@Autowired
 	private EmpInfoService empInfoService;
 	
-	ModelMap map = null;
-	
 	@PostMapping("evaluation")
-	public ModelMap registEmpEval(HttpServletRequest request, HttpServletResponse response){		
-		map = new ModelMap();
-		String sendData = request.getParameter("sendData");
-		
+	public ResultTO registEmpEval(@RequestBody EmpEvalTO emp){		
+		ResultTO resultTO = new ResultTO();
 		try{			
-			Gson gson = new Gson();
-			EmpEvalTO emp = gson.fromJson(sendData, EmpEvalTO.class);
 			empInfoService.registEmpEval(emp);
-			map.put("errorMsg","success");
-			map.put("errorCode", 0);
+			resultTO.setErrorMsg("success");
+			resultTO.setErrorCode("0");
 			
 		} catch (Exception dae){
-			map.clear();
-			map.put("errorCode", -1);
-			map.put("errorMsg", dae.getMessage());
+			resultTO.setErrorCode("-1");
+			resultTO.setErrorMsg(dae.getMessage());
 		}
-		return map;
+		return resultTO;
 	}
 	
 	
 	@GetMapping("/evaluation")
-	public ModelMap findEmpEval(HttpServletRequest request, HttpServletResponse response){		
-		map = new ModelMap();		
+	public ResultTO findEmpEval(){		
+		ResultTO resultTO = new ResultTO();
 		try{
-			
 			ArrayList<EmpEvalTO> empevalList = empInfoService.findEmpEval();			
-			map.put("empevalList", empevalList);
-			map.put("errorMsg","success");
-			map.put("errorCode", 0);
+			resultTO.setAttribute("empevalList", empevalList);
+			resultTO.setErrorMsg("success");
+			resultTO.setErrorCode("0");
 
 		} catch (Exception dae){
-			map.clear();
-			map.put("errorCode", -1);
-			map.put("errorMsg", dae.getMessage());
+			resultTO.setErrorCode("-1");
+			resultTO.setErrorMsg(dae.getMessage());
 		}
-		return map;
+		return resultTO;
 	}
 	
 	@DeleteMapping("evaluation")
-	public ModelMap removeEmpEvalList(HttpServletRequest request, HttpServletResponse response){		
-		map = new ModelMap();		
-		String emp_code = request.getParameter("emp_code");
-		String apply_day = request.getParameter("apply_day");
-		
+	public ResultTO removeEmpEvalList(@RequestParam("emp_code") String emp_code, @RequestParam("apply_day") String apply_day){		
+		ResultTO resultTO = new ResultTO();
 		try{			
 			empInfoService.removeEmpEvalList(emp_code, apply_day);
-			map.put("errorMsg","success");
-			map.put("errorCode", 0);
+			resultTO.setErrorMsg("success");
+			resultTO.setErrorCode("0");
 
 		} catch (Exception dae){	
-			map.clear();
-			map.put("errorCode", -1);
-			map.put("errorMsg", dae.getMessage());
+			resultTO.setErrorCode("-1");
+			resultTO.setErrorMsg(dae.getMessage());
 		}
-		return map;
+		return resultTO;
 	}
 	
 }

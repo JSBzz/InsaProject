@@ -17,7 +17,8 @@ import kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.EmpTO;
 import kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.FamilyInfoTO;
 import kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.LicenseInfoTO;
 import kr.co.seoulit.insa.empmgmtsvc.empinfomgmt.to.WorkInfoTO;
-
+import kr.co.seoulit.insa.commsvc.systemmgmt.to.ResultTO;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/empinfomgmt/*")
 @RestController
@@ -25,13 +26,11 @@ public class EmpDetailController {
 	
 	@Autowired
 	private EmpInfoService empInfoService;
-	ModelMap map = null;
 	
 	@GetMapping("/empdetail/all")
-	public ModelMap findAllEmployeeInfo(HttpServletRequest request, HttpServletResponse response){
+	public ResultTO findAllEmployeeInfo(@RequestParam String empCode){
 		
-		map = new ModelMap();
-		String empCode = request.getParameter("empCode");
+		ResultTO resultTO = new ResultTO();
 		
 		try{
 			EmpTO empTO=empInfoService.findAllEmpInfo(empCode);
@@ -39,63 +38,52 @@ public class EmpDetailController {
 			ArrayList<LicenseInfoTO> licenseInfoTO = empTO.getLicenseInfoList();			
 			ArrayList<FamilyInfoTO> familyInfoTO = empTO.getFamilyInfoList();
 			
-			System.out.println("Check" +licenseInfoTO);
-			
-			map.put("empBean", empTO);
-			map.put("emptyFamilyInfoBean",familyInfoTO );
-			map.put("emptyLicenseInfoBean", licenseInfoTO);
-			map.put("emptyWorkInfoBean", workInfoTO);
-			map.put("errorMsg","success");
-			map.put("errorCode", 0);
+			resultTO.setAttribute("empBean", empTO);
+			resultTO.setAttribute("emptyFamilyInfoBean",familyInfoTO );
+			resultTO.setAttribute("emptyLicenseInfoBean", licenseInfoTO);
+			resultTO.setAttribute("emptyWorkInfoBean", workInfoTO);
+			resultTO.setErrorMsg("success");
+			resultTO.setErrorCode("0");
 
 		} catch (Exception dae){
-			map.clear();
-			map.put("errorCode", -1);
-			map.put("errorMsg", dae.getMessage());
+			resultTO.setErrorCode("-1");
+			resultTO.setErrorMsg(dae.getMessage());
 		}
-		return map;
+		return resultTO;
 	}
 	
 	@PutMapping("/empdetail/empcode")
-	public ModelMap modifyEmployee(HttpServletRequest request, HttpServletResponse response){
+	public ResultTO modifyEmployee(@RequestBody EmpTO emp){
 		
-		map = new ModelMap();
-		String sendData = request.getParameter("sendData");
+		ResultTO resultTO = new ResultTO();
 		
 		try{
-			Gson gson = new Gson();
-			EmpTO emp = gson.fromJson(sendData, EmpTO.class);
 			empInfoService.modifyEmployee(emp);
-			map.put("errorMsg","success");
-			map.put("errorCode", 0);
+			resultTO.setErrorMsg("success");
+			resultTO.setErrorCode("0");
 
 		} catch (Exception dae){
-			map.clear();
-			map.put("errorCode", -1);
-			map.put("errorMsg", dae.getMessage());
+			resultTO.setErrorCode("-1");
+			resultTO.setErrorMsg(dae.getMessage());
 		}
-		return map;
+		return resultTO;
 	}
 	
 	@DeleteMapping("/empdetail/empcode")
-	public ModelMap removeEmployeeList(HttpServletRequest request, HttpServletResponse response){
+	public ResultTO removeEmployeeList(@RequestBody ArrayList<EmpTO> empList){
 		
-		map = new ModelMap();
-		String sendData = request.getParameter("sendData");
+		ResultTO resultTO = new ResultTO();
 		
 		try{ 			
-			Gson gson = new Gson();
-			ArrayList<EmpTO> empList = gson.fromJson(sendData, new TypeToken<ArrayList<EmpTO>>(){}.getType());
 			empInfoService.deleteEmpList(empList);
-			map.put("errorMsg","success");
-			map.put("errorCode", 0);
+			resultTO.setErrorMsg("success");
+			resultTO.setErrorCode("0");
 
 		} catch (Exception dae){
-			map.clear();
-			map.put("errorCode", -1);
-			map.put("errorMsg", dae.getMessage());
+			resultTO.setErrorCode("-1");
+			resultTO.setErrorMsg(dae.getMessage());
 		}
 
-		return map;
+		return resultTO;
 	}
 }
